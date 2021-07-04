@@ -42,11 +42,11 @@ class MainActivity : AppCompatActivity() {
                 .await()
                 .articles[0]
                 .also {
+                    val bitmap = BitmapFactory.decodeStream(URL(it!!.url).openConnection().getInputStream())
                     this@MainActivity.runOnUiThread {
-                            val bitmap = BitmapFactory.decodeStream(URL(it!!.url).openConnection().getInputStream())
                             binding.mainNewsCard.cardsImage.setImageBitmap(bitmap)
                             binding.mainNewsCard.cardHeader.text = it.title
-                            binding.mainNewsCard.cardHeader.text = it.title
+                            binding.mainNewsCard.cardSubtitle.text = it.title
                     }
                 }
 
