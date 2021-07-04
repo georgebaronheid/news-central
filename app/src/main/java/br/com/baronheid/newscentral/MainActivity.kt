@@ -49,20 +49,8 @@ class MainActivity : AppCompatActivity() {
                             binding.mainNewsCard.cardSubtitle.text = it.title
                     }
                 }
-
-            launch {
-
-            }
         }
-
-
-
-
     }
-
-
-
-
 }
 
 
