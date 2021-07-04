@@ -22,9 +22,6 @@ class RetrofitFactory {
         .addConverterFactory(GsonConverterFactory.create())
         .build()
 
-    fun interceptorConfig(interceptor: HttpLoggingInterceptor) {
-    }
-
     fun newsService() : NewsService {
 
         return retrofitFactory
