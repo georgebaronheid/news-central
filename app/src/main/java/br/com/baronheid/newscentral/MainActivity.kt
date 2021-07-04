@@ -21,9 +21,9 @@ import retrofit2.Response
 import retrofit2.await
 import java.lang.RuntimeException
 import java.net.URL
-import kotlin.coroutines.CoroutineContext
 
 class MainActivity : AppCompatActivity() {
+
 
     private lateinit var binding: ActivityMainBinding
 
@@ -34,22 +34,35 @@ class MainActivity : AppCompatActivity() {
 
         val call = RetrofitFactory().newsService()
 
+        val cardContent = object {}
+
         GlobalScope.launch(Dispatchers.IO) {
-            call
+            val news = call
                 .getTopHeadlines()
                 .await()
                 .articles[0]
                 .also {
-                    val bitmap =
-                        BitmapFactory.decodeStream(URL(it!!.url).openConnection().getInputStream())
                     this@MainActivity.runOnUiThread {
-                        binding.mainNewsCard.cardsImage.setImageBitmap(bitmap)
-                        binding.mainNewsCard.cardHeader.text = it?.title ?: "Placeholder Title"
-                        binding.mainNewsCard.cardSubtitle.text = it?.title ?: "Placeholder Title"
+                            val bitmap = BitmapFactory.decodeStream(URL(it!!.url).openConnection().getInputStream())
+                            binding.mainNewsCard.cardsImage.setImageBitmap(bitmap)
+                            binding.mainNewsCard.cardHeader.text = it.title
+                            binding.mainNewsCard.cardHeader.text = it.title
+                    }
                 }
+
+            launch {
+
             }
         }
+
+
+
+
     }
+
+
+
+
 }
 
 
