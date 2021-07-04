@@ -16,6 +16,4 @@ interface NewsService {
         @Query("size") size: Int? = 10,
         @Query("page") page: Int? = 1
     ): Call<News>
-
-    @GET("")
 }

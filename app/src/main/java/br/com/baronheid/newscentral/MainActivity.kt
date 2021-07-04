@@ -3,6 +3,7 @@ package br.com.baronheid.newscentral
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
+import android.provider.Contacts
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -10,15 +11,19 @@ import br.com.baronheid.newscentral.databinding.ActivityMainBinding
 import br.com.baronheid.newscentral.model.entities.News
 import br.com.baronheid.newscentral.model.service.RetrofitFactory
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import okhttp3.internal.wait
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import retrofit2.await
 import java.lang.RuntimeException
 import java.net.URL
+import kotlin.coroutines.CoroutineContext
 
 class MainActivity : AppCompatActivity() {
-
 
     private lateinit var binding: ActivityMainBinding
 
@@ -27,39 +32,24 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val call = RetrofitFactory().newsService().getTopHeadlines()
+        val call = RetrofitFactory().newsService()
 
-        call
-            .enqueue(object : Callback<News> {
-
-                override fun onResponse(call: Call<News>, response: Response<News>) {
-
-                    response.body()?.let {
-                        Log.i("IMG_URL", "${it.articles[0]?.urlToImage}")
-
-                        binding.mainNewsCard.cardHeader.text = it.articles[0]?.title ?: "none"
-                        binding.mainNewsCard.cardSubtitle.text = it.articles[0]?.description
-                        binding.mainNewsCard.cardsImage
-                    } ?: Toast.makeText(
-                        this@MainActivity,
-                        "No body",
-                        Toast.LENGTH_LONG
-                    )
-                        .show()
+        GlobalScope.launch(Dispatchers.IO) {
+            call
+                .getTopHeadlines()
+                .await()
+                .articles[0]
+                .also {
+                    val bitmap =
+                        BitmapFactory.decodeStream(URL(it!!.url).openConnection().getInputStream())
+                    this@MainActivity.runOnUiThread {
+                        binding.mainNewsCard.cardsImage.setImageBitmap(bitmap)
+                        binding.mainNewsCard.cardHeader.text = it?.title ?: "Placeholder Title"
+                        binding.mainNewsCard.cardSubtitle.text = it?.title ?: "Placeholder Title"
                 }
-
-
-                override fun onFailure(call: Call<News>, t: Throwable) {
-                    Log.e("ERROR: ", t.message!!)
-                }
-
-            })
-
+            }
+        }
     }
-
-
-
-
 }
 
 

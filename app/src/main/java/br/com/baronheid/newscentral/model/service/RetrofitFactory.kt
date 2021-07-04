@@ -22,11 +22,9 @@ class RetrofitFactory {
         .addConverterFactory(GsonConverterFactory.create())
         .build()
 
-    fun newsService() : NewsService {
-
-        return retrofitFactory
+    fun newsService() : NewsService = retrofitFactory
             .create(NewsService::class.java)
-    }
+
     companion object {
         const val BASE_URL = "https://newsapi.org/v2/"
     }
