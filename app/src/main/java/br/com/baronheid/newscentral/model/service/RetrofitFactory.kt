@@ -7,18 +7,8 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 class RetrofitFactory {
 
-    private val interceptor = run {
-        val httpLoggingInterceptor = HttpLoggingInterceptor()
-        httpLoggingInterceptor.apply {
-            httpLoggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
-        }
-    }
-
-    private val client = OkHttpClient.Builder().addInterceptor(interceptor).build()
-
     private val retrofitFactory = Retrofit.Builder()
         .baseUrl(BASE_URL)
-        .client(client)
         .addConverterFactory(GsonConverterFactory.create())
         .build()
 
