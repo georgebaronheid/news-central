@@ -1,6 +1,7 @@
 package br.com.baronheid.newscentral
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -19,11 +20,11 @@ private const val LOG_TAG = "MAIN_ACTIVITY"
 
 class MainActivity : AppCompatActivity() {
     private var displayedArticles = mutableListOf<Article>()
-    private var adapterView = NewsAdapter(displayedArticles, this::onArticleItemClick)
+    private var adapterView = NewsAdapter(this::onArticleItemClick)
 
-    private lateinit var binding: ActivityMainBinding
 
-    private fun onArticleItemClick(article: Article): Unit = TODO()
+    private fun onArticleItemClick(article: Article): Unit = Toast
+        .makeText(this, "Title: ${article.title}", Toast.LENGTH_LONG).show()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -98,8 +99,12 @@ class MainActivity : AppCompatActivity() {
 //        }
 //    }
 
+    override fun onRetainCustomNonConfigurationInstance(): Any? {
+        return displayedArticles
+    }
+
     private fun onSwipeAction(call: NewsService) {
-        binding.swipeRefreshMain.setOnRefreshListener { getNewsCoroutine(call) }
+        swipe_refresh_main.setOnRefreshListener { getNewsCoroutine(call) }
     }
 
     private fun getNewsCoroutine(call: NewsService) {
@@ -107,12 +112,12 @@ class MainActivity : AppCompatActivity() {
             call
                 .getTopHeadlines()
                 .awaitResponse()
-                .body()
-                ?.articles.let {
-                    val localMutable = mutableListOf<Article>()
-                    if (!it.isNullOrEmpty()) {
-                        TODO("Como adicionar o resultado na recyclerview?")
-                        it.toCollection(localMutable)
+                .takeIf { it.isSuccessful && !it.body()!!.articles.isNullOrEmpty() }
+                .apply {
+                    this@MainActivity.runOnUiThread {
+                        displayedArticles = this!!.body()!!.articles as MutableList<Article>
+                        adapterView.setData(displayedArticles)
+                        swipe_refresh_main.isRefreshing = false
                     }
                 }
 
