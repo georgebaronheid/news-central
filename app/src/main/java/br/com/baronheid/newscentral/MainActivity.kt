@@ -1,17 +1,7 @@
 package br.com.baronheid.newscentral
 
-import android.content.Context
-import android.content.pm.PackageManager
-import android.graphics.Bitmap
 import android.os.Bundle
-import android.os.Environment
-import android.provider.MediaStore
-import android.util.Log
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
-import androidx.core.content.contentValuesOf
-import androidx.core.graphics.drawable.toBitmap
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import br.com.baronheid.newscentral.databinding.ActivityMainBinding
@@ -19,23 +9,17 @@ import br.com.baronheid.newscentral.model.entities.Article
 import br.com.baronheid.newscentral.model.service.NewsService
 import br.com.baronheid.newscentral.model.service.RetrofitFactory
 import br.com.baronheid.newscentral.views.NewsAdapter
-import coil.load
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import retrofit2.await
 import retrofit2.awaitResponse
-import java.io.File
-import java.io.FileOutputStream
-import java.io.OutputStream
-import java.util.*
 
 private const val LOG_TAG = "MAIN_ACTIVITY"
 
 class MainActivity : AppCompatActivity() {
-    private var articles = mutableListOf<Article>()
-    private var adapterView = NewsAdapter(articles, this::onArticleItemClick)
+    private var displayedArticles = mutableListOf<Article>()
+    private var adapterView = NewsAdapter(displayedArticles, this::onArticleItemClick)
 
     private lateinit var binding: ActivityMainBinding
 
@@ -124,12 +108,15 @@ class MainActivity : AppCompatActivity() {
                 .getTopHeadlines()
                 .awaitResponse()
                 .body()
-                ?.articles
-                ?.let {
-                    this@MainActivity.runOnUiThread {
-                        applyUiChanges(it)
+                ?.articles.let {
+                    val localMutable = mutableListOf<Article>()
+                    if (!it.isNullOrEmpty()) {
+                        TODO("Como adicionar o resultado na recyclerview?")
+                        it.toCollection(localMutable)
                     }
                 }
+
+
         }
     }
 
