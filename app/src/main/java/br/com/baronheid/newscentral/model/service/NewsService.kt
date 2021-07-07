@@ -11,8 +11,8 @@ interface NewsService {
     @Headers("X-Api-Key: 0574dde348e64b6db498fec89a084fa7")
     @GET("top-headlines")
     fun getTopHeadlines(
-        @Query("country") countries: String? = "us",
-        @Query("size") size: Int? = 10,
+        @Query("country") countries: String? = "br",
+        @Query("pageSize") size: Int? = 100,
         @Query("page") page: Int? = 1
     ): Call<News>
 }

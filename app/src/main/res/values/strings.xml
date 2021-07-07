@@ -1,4 +1,11 @@
 <resources>
     <string name="app_name">News Central</string>
     <string name="image_description">Imagem da notícia</string>
+    <string name="download">Baixar imagem</string>
+    <string name="share">Compartilhar</string>
+    <string name="need_permission">Este aplicativo necessita de permissão para salvar imagens</string>
+    <string name="permission_granted">Permissão garantida</string>
+    <string name="permission_denied">Permissão negada</string>
+    <string name="image_downloaded">Imagem baixada</string>
+    <string name="saved_image_description">Imagem NewsCentral</string>
 </resources>

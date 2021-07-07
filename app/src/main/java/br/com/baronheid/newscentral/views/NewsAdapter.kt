@@ -8,15 +8,12 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import br.com.baronheid.newscentral.R
 import br.com.baronheid.newscentral.model.entities.Article
-import br.com.baronheid.newscentral.model.entities.News
 import coil.load
-import kotlinx.android.synthetic.main.news_cards.view.*
-import okhttp3.internal.notify
-import retrofit2.Response
 
 class NewsAdapter(
     private val callback: (Article) -> Unit
 ) : RecyclerView.Adapter<NewsAdapter.VH>() {
+
 
     private val articles: MutableList<Article> = mutableListOf()
 
@@ -27,17 +24,8 @@ class NewsAdapter(
         return VH(view)
     }
 
-    override fun onBindViewHolder(holder: VH, position: Int) {
-        holder.itemView.setOnClickListener {
-            TODO("Aqui preciso pegar o objeto ARticle clicando pra passar pra nova activity")
-        }
-        val urlToImage = articles[position].urlToImage
-        val title = articles[position].title
-        val description = articles[position].description
-        holder.imageView.load(urlToImage)
-        holder.header.text = title
-        holder.subtitle.text = description
-    }
+    override fun onBindViewHolder(holder: VH, position: Int) = holder.bind(articles[position])
+
 
     override fun getItemCount(): Int = articles.size
 
@@ -47,10 +35,19 @@ class NewsAdapter(
         notifyDataSetChanged()
     }
 
-    class VH(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val imageView: ImageView = itemView.cards_image
-        val header: TextView = itemView.card_header
-        val subtitle: TextView = itemView.card_subtitle
+    inner class VH(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        private val imageView: ImageView = itemView.findViewById(R.id.cards_image)
+        private val header: TextView = itemView.findViewById(R.id.card_header)
+        private val subtitle: TextView = itemView.findViewById(R.id.card_subtitle)
+
+        fun bind(article: Article) {
+            imageView.load(article.urlToImage)
+            header.text = article.title
+            subtitle.text = article.description
+            itemView.rootView.setOnClickListener {
+                callback(article)
+            }
+        }
     }
 
 }
