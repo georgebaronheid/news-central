@@ -5,7 +5,7 @@
     android:id="@+id/root_card"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/card_coner"
+    android:background="@drawable/card_corner"
     app:cardCornerRadius="12dp"
     app:cardElevation="4dp"
     app:cardPreventCornerOverlap="true"
